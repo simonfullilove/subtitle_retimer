@@ -1,29 +1,30 @@
 import re
+import datetime
 
 original = open("example.srt", "r")
 new_srt = open("new_srt.srt", "w")
 
 offset_hours = 0
-offset_mins = 0
-offset_secs = 0
-offset_millis = 0
+offset_mins = -3
+offset_secs = -31
+offset_millis = 1
+
+def offset_srt_timestamp(srt_timestamp, hrs, mins, secs, millis):
+    offset_timestamp = datetime.datetime.strptime(srt_timestamp, "%H:%M:%S,%f")
+    offset_timestamp = offset_timestamp + datetime.timedelta(milliseconds=millis)
+    offset_timestamp = offset_timestamp + datetime.timedelta(seconds=secs)
+    offset_timestamp = offset_timestamp + datetime.timedelta(minutes=mins)
+    offset_timestamp = offset_timestamp + datetime.timedelta(hours=hrs)
+    return str(offset_timestamp)[11:23].replace(".",",")
 
 for line in original:
-
-    cur_timestamp = re.findall("\d\d:\d\d:\d\d,\d\d\d --> \d\d:\d\d:\d\d,\d\d\d", line)
-
-    if cur_timestamp:
-        cur_start_hours = int(cur_timestamp[:2])
-        cur_start_mins = int(cur_timestamp[3:5])
-        cur_start_secs = int(cur_timestamp[6:8])
-        cur_start_millis = int(cur_timestamp[9:12])
-        cur_stop_hours = int(cur_timestamp[17:19])
-        cur_stop_mins = int(cur_timestamp[20:22])
-        cur_stop_secs = int(cur_timestamp[23:25])
-        cur_stop_millis = int(cur_timestamp[26:])
-
-        cur_offset_millis = offset_millis +
-
+    timestamps = re.findall("\d\d:\d\d:\d\d,\d\d\d", line)
+    if timestamps:
+        cur_start = timestamps[0]
+        cur_stop = timestamps[1]
+        new_start = offset_srt_timestamp(cur_start, offset_hours, offset_mins, offset_secs, offset_millis)
+        new_stop = offset_srt_timestamp(cur_stop, offset_hours, offset_mins, offset_secs, offset_millis)
+        new_srt.write(f'{new_start}  --> {new_stop}\n')
     else:
         new_srt.write(line)
 

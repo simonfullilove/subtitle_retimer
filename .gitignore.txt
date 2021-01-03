@@ -1,1 +1,3 @@
 /.idea/
+/example.srt/
+/new_srt.srt/
