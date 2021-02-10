@@ -15,12 +15,12 @@ def retime_srt(srt_path_string, srt_filename, offset_hours, offset_mins, offset_
         output.see(tk.END)
         return
 
-    if srt_path_string[-4:] != ".srt":
+    if srt_path_string[-4:].lower() != ".srt":
         output.insert(tk.END, 'Selected file is not .srt file...' + '\n')
         output.see(tk.END)
         return
 
-    original = open(srt_path_string, "r")
+    original = open(srt_path_string, "r", encoding='utf-8')
 
     lines_done = 0
 
@@ -33,7 +33,7 @@ def retime_srt(srt_path_string, srt_filename, offset_hours, offset_mins, offset_
         offset_string = str(offset_timestamp)[11:23].replace(".",",")
         return offset_string
 
-    new_srt = open(f'{dest_path}/{srt_filename[:-4]} RETIMED ({offset_hours},{offset_mins},{offset_secs},{offset_millis}).srt', "w")
+    new_srt = open(f'{dest_path}/{srt_filename[:-4]} RETIMED ({offset_hours},{offset_mins},{offset_secs},{offset_millis}).srt', "w", encoding='utf-8')
 
     for line in original:
         timestamps = re.findall("\d\d:\d\d:\d\d,\d\d\d", line)
