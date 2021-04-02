@@ -1,3 +1,6 @@
 /.idea/
 /example.srt/
 /new_srt.srt/
+main.spec
+/dist/
+/build/
